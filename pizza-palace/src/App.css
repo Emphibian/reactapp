@@ -154,3 +154,46 @@ ul {
   font-size: 1.1em;
   border: thin solid black;
 }
+
+/* Visit CSS */
+.visit-table {
+  margin: 3%;
+  width: 33%;
+  flex: 1 1 auto;
+  height: fit-content;
+  grid-template-columns: repeat(3, 1fr);
+  display: grid;
+  border: medium solid grey;
+  border-radius: 1em;
+  text-align: center;
+}
+
+.table-top-grid {
+  grid-column-start: 1;
+  align-items: center;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  border-bottom: thin solid green;
+  font-size: 1.2em;
+  height: 2em;
+}
+
+.visit-cell {
+  height: 5em;
+  border: thin inset green;
+  border-radius: 0.3em;
+}
+
+.visit-area {
+  display: flex;
+  margin: 0 15%;
+  min-height: 70vh;
+}
+
+.cell-red {
+  background: #f42525;
+}
+
+.cell-green {
+  background: #61ff61;
+}

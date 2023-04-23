@@ -39,17 +39,66 @@ class Container extends React.Component {
   }
 }
 
-function Visit() {
-  return (
-    <div className="Reservation">
-      <button
-        type="button"
-        title="This does not guarantee seats. It's applicable on the people at the moment."
-      >
-        Apply
-      </button>
-    </div>
-  );
+class Visit extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      normal_tables: [],
+      outdoor_tables: [],
+      lounge_tables: [],
+    };
+  }
+
+  componentDidMount() {
+    fetch("/tables/normal")
+      .then((res) => res.json())
+      .then((data) => this.setState({ normal_tables: data }));
+
+    fetch("/tables/outdoor")
+      .then((res) => res.json())
+      .then((data) => this.setState({ outdoor_tables: data }));
+
+    fetch("/tables/lounge")
+      .then((res) => res.json())
+      .then((data) => this.setState({ lounge_tables: data }));
+  }
+
+  render_cell(props) {
+    if (props.row.booked) {
+      return (
+        <div className="visit-cell cell-red">Table no. {props.index + 1}</div>
+      );
+    } else {
+      return (
+        <div className="visit-cell cell-green">Table no. {props.index + 1}</div>
+      );
+    }
+  }
+
+  render() {
+    return (
+      <div className="visit-area">
+        <div className="visit-table">
+          <div className="table-top-grid">Normal Tables</div>
+          {this.state.normal_tables.map((row, index) =>
+            this.render_cell({ row, index })
+          )}
+        </div>
+        <div className="visit-table">
+          <div className="table-top-grid">Outdoor Tables</div>
+          {this.state.outdoor_tables.map((row, index) =>
+            this.render_cell({ row, index })
+          )}
+        </div>
+        <div className="visit-table">
+          <div className="table-top-grid">Lounge Tables</div>
+          {this.state.lounge_tables.map((row, index) =>
+            this.render_cell({ row, index })
+          )}
+        </div>
+      </div>
+    );
+  }
 }
 
 class Menu extends React.Component {
@@ -130,7 +179,7 @@ function MenuEleFocused(props) {
     <div className="MenuEle-focused">
       <div className="focused-detail">
         <div className="focused-image">
-          <img src={props.info.image} />
+          <img src={props.info.image} alt={props.info.title} />
         </div>
         <div className="focused-description">
           <h3>{props.info.title}</h3>
@@ -189,13 +238,13 @@ function FooterBot() {
         <h3 className="mr5">Social</h3>
         <ul>
           <li>
-            <img src={discord} />
+            <img src={discord} alt="discord" />
           </li>
           <li>
-            <img src={insta} width="50" height="50" />
+            <img src={insta} width="50" height="50" alt="instagram" />
           </li>
           <li>
-            <img src={twit} />
+            <img src={twit} alt="twitter" />
           </li>
         </ul>
       </div>
@@ -218,7 +267,7 @@ function Home() {
         <p>Some new paragraph.</p>
       </div>
       <div className="side-content">
-        <img src={locat} />
+        <img src={locat} alt="location" />
       </div>
     </div>
   );
