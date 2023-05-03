@@ -25,4 +25,25 @@ router.get("/outdoor", function (req, res, next) {
   });
 });
 
+router.post('/update', function(req, res, next) {
+  let {table_type, table_num} = req.body;
+
+  if (table_type==="Normal") {
+    db.run("UPDATE normal SET booked = 1 WHERE num = ?", table_num);
+  } else if (table_type==="Lounge") {
+    db.run("UPDATE lounge SET booked = 1 WHERE num = ?", table_num);
+  } else {
+    db.run("UPDATE outdoor SET booked = 1 WHERE num = ?", table_num);
+  }
+});
+
+router.get('/reset', function(req, res, next) {
+  let tables = ["normal", "outdoor", "lounge"];
+  tables.map((table) => {
+    db.all(`SELECT num FROM ${table} WHERE booked = 1`, (err, rows) => {
+      if (err) throw err;
+      rows.map((info) => db.run(`UPDATE ${table} SET booked = 0 WHERE num = ?`, info.num));
+    });
+  });
+});
 module.exports = router;

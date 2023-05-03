@@ -35,6 +35,8 @@ class Container extends React.Component {
       return <Visit />;
     } else if (this.props.page === "Menu") {
       return <Menu />;
+    } else if (this.props.page === "Reservation") {
+      return <Reservation />;
     }
   }
 }
@@ -66,7 +68,7 @@ class Visit extends React.Component {
   render_cell(props) {
     if (props.row.booked) {
       return (
-        <div className="visit-cell cell-red">Table no. {props.index + 1}</div>
+        <div className="visit-cell cell-gray">Table no. {props.index + 1}</div>
       );
     } else {
       return (
@@ -193,6 +195,186 @@ function MenuEleFocused(props) {
   );
 }
 
+class Reservation extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loaded_type: "",
+      bookedTables: [],
+    };
+
+    // binding the context
+    this.handleChange = this.handleChange.bind(this);
+    this.handleInsertBooking = this.handleInsertBooking.bind(this);
+    this.cleanBookedTables = this.cleanBookedTables.bind(this);
+    this.handleRemoveBooking = this.handleRemoveBooking.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({ loaded_type: event.target.value });
+  }
+
+  handleInsertBooking(info) {
+    this.setState({
+      bookedTables: [...this.state.bookedTables, {table_num: info.table_num, table_type: info.table_type}]
+    });
+  }
+  
+  handleRemoveBooking(info) {
+    this.setState({
+      bookedTables: this.state.bookedTables.filter((table_obj) => table_obj.table_num !== info.table_num || table_obj.table_type !== info.table_type)
+    });
+  }
+
+  cleanBookedTables() {
+    this.setState({
+      bookedTables: [],
+    });
+  }
+
+  render() {
+    return (
+      <main>
+        <div className="reservation-selection-div">
+          <div className="left-selection-div">
+            <select value={this.state.loaded_type} onChange={this.handleChange} name="tables" id="tables">
+              <option value="Not Important">Please select the type of the tables</option>
+              <option value="Normal">Normal</option>
+              <option value="Lounge">Lounge</option>
+              <option value="Outdoor">Outdoor</option>
+            </select>
+            <div className="booked-table-brd">
+              <h2>Booked Tables</h2>
+            </div>
+            <BookedQueue bookedTables={this.state.bookedTables} />
+          </div>
+          <div className="right-selection-div">
+            <div className="reservation-table-layout">
+              <img src={locat} />
+            </div>
+            <TablesLoader
+              handleInsertBooking={this.handleInsertBooking}
+              handleRemoveBooking={this.handleRemoveBooking}
+              loaded_type={this.state.loaded_type}
+              bookedTables={this.state.bookedTables} />
+          </div>
+        </div>
+        <button onClick={() => this.cleanBookedTables()}>Clear</button>
+        <Confirm bookedTables={this.state.bookedTables} cleanBookedTables={this.cleanBookedTables}/>
+        <button onClick={() => fetch("/tables/reset")}>Reset</button>
+      </main>
+    );
+  }
+}
+
+function Confirm(props) {
+  return (
+    <button onClick={() => {props.bookedTables.map((info) => fetch("/tables/update", {
+      method: "POST",
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        table_type: info.table_type,
+        table_num: info.table_num,
+      }),
+    })); props.cleanBookedTables();}}>Confirm</button>
+  );
+}
+
+class BookedQueue extends React.Component {
+ render_cell(info) {
+    return (
+    <div className='reservation-booked-cell'>
+      {`${info.table_type} Table No. ${info.table_num}`}
+    </div>
+    );
+  }
+
+  render() {
+    return (
+    <div className="reservation-booked-grid">
+      {this.props.bookedTables.map((info) => this.render_cell(info))}
+    </div>
+    );
+  }
+}
+
+class TablesLoader extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      normal_tables: [],
+      outdoor_tables: [],
+      lounge_tables: [],
+    };
+  }
+
+  componentDidMount() {
+    fetch("/tables/normal")
+      .then((res) => res.json())
+      .then((data) => this.setState({ normal_tables: data }));
+
+    fetch("/tables/outdoor")
+      .then((res) => res.json())
+      .then((data) => this.setState({ outdoor_tables: data }));
+
+    fetch("/tables/lounge")
+      .then((res) => res.json())
+      .then((data) => this.setState({ lounge_tables: data }));
+  }
+
+  selection() {
+    if (this.props.loaded_type === "Normal") {
+      return (
+        this.state.normal_tables.map((row, index) => this.render_cell({ row, index }))
+      );
+    } else if (this.props.loaded_type === "Outdoor") {
+      return (
+        this.state.outdoor_tables.map((row, index) => this.render_cell({ row, index }))
+      );
+    } else if (this.props.loaded_type === "Lounge") {
+      return(
+        this.state.lounge_tables.map((row, index) => this.render_cell({ row, index }))
+      );
+    }
+  }
+
+  render_cell(props) {
+    if (props.row.booked) {
+      return (
+        <div className="reservation-tables-cell cell-gray">
+            Table no. {props.index + 1}
+        </div>
+      );
+    } else if (this.props.bookedTables.filter((info) => info.table_num===props.index+1 && info.table_type===this.props.loaded_type)[0]) {
+      return (
+        <div className="reservation-tables-cell cell-red" onClick={() => this.props.handleRemoveBooking({
+            table_num: props.index + 1,
+            table_type: this.props.loaded_type
+          })}>
+          Table no. {props.index + 1}
+        </div>
+      );
+    } else {
+      return (
+        <div className="reservation-tables-cell cell-green" onClick={() => this.props.handleInsertBooking({
+              table_num: props.index + 1,
+              table_type: this.props.loaded_type
+            })}>
+            Table no. {props.index + 1}
+        </div>
+      );
+    }
+  }
+
+  render() {
+    return (
+      <div className="reservation-tables-grid">
+        {this.selection()}
+      </div>
+    );
+  }
+}
+
 function HeaderTop(props) {
   return (
     <div className="header">
@@ -214,8 +396,8 @@ function HeaderTop(props) {
             </button>
           </li>
           <li>
-            <button type="button" onClick={() => props.onChange("Premium")}>
-              Premium
+            <button type="button" onClick={() => props.onChange("Reservation")}>
+              Reservation
             </button>
           </li>
         </ul>
@@ -230,7 +412,7 @@ function FooterBot() {
       <div className="contact">
         <h3 className="mr5">Contacts</h3>
         <ul>
-          <li>RyuuSleek</li>
+          <li>Emphibian</li>
           <li>Kakkarot0</li>
         </ul>
       </div>
