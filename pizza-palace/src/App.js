@@ -245,8 +245,8 @@ class Reservation extends React.Component {
             </select>
             <div className="booked-table-brd">
               <h2>Booked Tables</h2>
+              <BookedQueue bookedTables={this.state.bookedTables} />
             </div>
-            <BookedQueue bookedTables={this.state.bookedTables} />
           </div>
           <div className="right-selection-div">
             <div className="reservation-table-layout">
@@ -259,9 +259,9 @@ class Reservation extends React.Component {
               bookedTables={this.state.bookedTables} />
           </div>
         </div>
-        <button onClick={() => this.cleanBookedTables()}>Clear</button>
+        <button class="button" onClick={() => this.cleanBookedTables()}>Clear</button>
         <Confirm bookedTables={this.state.bookedTables} cleanBookedTables={this.cleanBookedTables}/>
-        <button onClick={() => fetch("/tables/reset")}>Reset</button>
+        <button class="button danger" onClick={() => fetch("/tables/reset")}>Reset</button>
       </main>
     );
   }
@@ -269,7 +269,7 @@ class Reservation extends React.Component {
 
 function Confirm(props) {
   return (
-    <button onClick={() => {props.bookedTables.map((info) => fetch("/tables/update", {
+    <button class="button" onClick={() => {props.bookedTables.map((info) => fetch("/tables/update", {
       method: "POST",
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
