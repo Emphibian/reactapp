@@ -190,10 +190,116 @@ ul {
   min-height: 70vh;
 }
 
-.cell-red {
-  background: #f42525;
+.cell-gray {
+  background: #888;
 }
 
 .cell-green {
   background: #61ff61;
+}
+
+.cell-red {
+  background: red;
+}
+
+/* Reservation CSS */
+.reservation-selection-div {
+  display: flex;
+  border: thin solid #82c2e1;
+  margin: 5% 10%;
+  background-color: #d6ebf4;
+}
+
+.left-selection-div {
+  flex: 1 3 auto;
+  border-right: thin solid #000;
+}
+
+select#tables {
+  margin: 10% auto;
+  font-size: 1em;
+  max-width: 9em;
+}
+
+.right-selection-div {
+  flex: 1 1 auto;
+  padding: 2% 10% 5% 10%;
+}
+
+.reservation-tables-grid {
+  background-color: #85ec9f;
+  border: thin solid #82c2e1;
+  border-radius: 1em;
+  display: grid;
+  grid-auto-flow: column;
+  overflow: scroll;
+  grid-auto-columns: 15%;
+  min-height: 5em;
+  height: 18%;
+  align-items: center;
+  margin: 0% 10%;
+  max-width: 35em;
+}
+
+.reservation-booked-grid {
+  display: grid;
+  grid-auto-flow: row;
+  overflow: scroll;
+  grid-auto-rows: 20%;
+  padding: 1em 0;
+  min-height: 5em;
+  max-height: 15em;
+}
+
+.reservation-tables-cell {
+  margin: auto 10%;
+  border: thin solid #000;
+  border-radius: 0.5em;
+  height: 60%;
+}
+
+.reservation-table-layout {
+  margin: 2% auto;
+}
+
+.reservation-booked-cell {
+  padding: 0.5em;
+}
+
+.booked-table-brd {
+  margin: 1em;
+  border: medium solid #82c2e1;
+  border-radius: 0.5em;
+  background-color: #fff;
+}
+
+.booked-table-brd h2 {
+  font-weight: normal;
+  font-family: sans-serif;
+  font-size: 1.3em;
+  border-bottom: medium solid #82c2e1;
+  margin: 0px;
+  padding: 0.5em 0;
+}
+
+.button {
+  padding: 0.5em 5em;
+  margin: 0.5em;
+  font-size: 1em;
+  border: thin solid #000;
+  border-radius: 0.1em;
+}
+
+.danger {
+  background-color: #ff2727;
+  color: #fff;
+  font-weight: bold;
+}
+
+.danger:hover {
+  background-color: #e32929;
+}
+
+.danger:active {
+  background-color: #881717;
 }
