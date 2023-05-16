@@ -106,6 +106,8 @@ ul {
   margin: 1%;
   border: thin solid blue;
   border-radius: 0.3rem;
+  background-color: #ababee;
+  padding: 2em 0;
 }
 
 .MenuEle-focused {
@@ -163,7 +165,7 @@ ul {
   height: fit-content;
   grid-template-columns: repeat(3, 1fr);
   display: grid;
-  border: medium solid grey;
+  border: medium solid #82c2e1;
   border-radius: 1em;
   text-align: center;
 }
@@ -173,15 +175,19 @@ ul {
   align-items: center;
   grid-column-end: 4;
   grid-row-start: 1;
-  border-bottom: thin solid green;
+  border-bottom: medium solid #82c2e1;
   font-size: 1.2em;
   height: 2em;
+  padding-top: 0.7em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
 }
 
 .visit-cell {
   height: 5em;
   border: thin inset green;
-  border-radius: 0.3em;
+  border-radius: 0.1em;
+  margin: 0.2em;
 }
 
 .visit-area {
