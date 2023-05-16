@@ -201,6 +201,9 @@ class Reservation extends React.Component {
     this.state = {
       loaded_type: "",
       bookedTables: [],
+      normal_tables: [],
+      lounge_tables: [],
+      outdoor_tables: [],
     };
 
     // binding the context
@@ -208,6 +211,7 @@ class Reservation extends React.Component {
     this.handleInsertBooking = this.handleInsertBooking.bind(this);
     this.cleanBookedTables = this.cleanBookedTables.bind(this);
     this.handleRemoveBooking = this.handleRemoveBooking.bind(this);
+    this.fetchStates = this.fetchStates.bind(this);
   }
 
   handleChange(event) {
@@ -230,6 +234,20 @@ class Reservation extends React.Component {
     this.setState({
       bookedTables: [],
     });
+  }
+
+  fetchStates() {
+    fetch("/tables/normal")
+      .then((res) => res.json())
+      .then((data) => this.setState({ normal_tables: data }));
+
+    fetch("/tables/outdoor")
+      .then((res) => res.json())
+      .then((data) => this.setState({ outdoor_tables: data }));
+
+    fetch("/tables/lounge")
+      .then((res) => res.json())
+      .then((data) => this.setState({ lounge_tables: data }));
   }
 
   render() {
@@ -255,13 +273,17 @@ class Reservation extends React.Component {
             <TablesLoader
               handleInsertBooking={this.handleInsertBooking}
               handleRemoveBooking={this.handleRemoveBooking}
+              fetchStates={this.fetchStates}
               loaded_type={this.state.loaded_type}
-              bookedTables={this.state.bookedTables} />
+              bookedTables={this.state.bookedTables}
+              normal_tables={this.state.normal_tables}
+              outdoor_tables={this.state.outdoor_tables}
+              lounge_tables={this.state.lounge_tables} />
           </div>
         </div>
-        <button class="button" onClick={() => this.cleanBookedTables()}>Clear</button>
-        <Confirm bookedTables={this.state.bookedTables} cleanBookedTables={this.cleanBookedTables}/>
-        <button class="button danger" onClick={() => fetch("/tables/reset")}>Reset</button>
+        <button className="button" onClick={() => this.cleanBookedTables()}>Clear</button>
+        <Confirm bookedTables={this.state.bookedTables} cleanBookedTables={this.cleanBookedTables} fetchStates={this.fetchStates}/>
+        <button className="button danger" onClick={() => {fetch("/tables/reset"); this.fetchStates();}}>Reset</button>
       </main>
     );
   }
@@ -269,14 +291,14 @@ class Reservation extends React.Component {
 
 function Confirm(props) {
   return (
-    <button class="button" onClick={() => {props.bookedTables.map((info) => fetch("/tables/update", {
+    <button className="button" onClick={() => {props.bookedTables.map((info) => fetch("/tables/update", {
       method: "POST",
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         table_type: info.table_type,
         table_num: info.table_num,
       }),
-    })); props.cleanBookedTables();}}>Confirm</button>
+    })); props.cleanBookedTables(); props.fetchStates();}}>Confirm</button>
   );
 }
 
@@ -301,39 +323,24 @@ class BookedQueue extends React.Component {
 class TablesLoader extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      normal_tables: [],
-      outdoor_tables: [],
-      lounge_tables: [],
-    };
   }
 
   componentDidMount() {
-    fetch("/tables/normal")
-      .then((res) => res.json())
-      .then((data) => this.setState({ normal_tables: data }));
-
-    fetch("/tables/outdoor")
-      .then((res) => res.json())
-      .then((data) => this.setState({ outdoor_tables: data }));
-
-    fetch("/tables/lounge")
-      .then((res) => res.json())
-      .then((data) => this.setState({ lounge_tables: data }));
+    this.props.fetchStates();
   }
 
   selection() {
     if (this.props.loaded_type === "Normal") {
       return (
-        this.state.normal_tables.map((row, index) => this.render_cell({ row, index }))
+        this.props.normal_tables.map((row, index) => this.render_cell({ row, index }))
       );
     } else if (this.props.loaded_type === "Outdoor") {
       return (
-        this.state.outdoor_tables.map((row, index) => this.render_cell({ row, index }))
+        this.props.outdoor_tables.map((row, index) => this.render_cell({ row, index }))
       );
     } else if (this.props.loaded_type === "Lounge") {
       return(
-        this.state.lounge_tables.map((row, index) => this.render_cell({ row, index }))
+        this.props.lounge_tables.map((row, index) => this.render_cell({ row, index }))
       );
     }
   }
