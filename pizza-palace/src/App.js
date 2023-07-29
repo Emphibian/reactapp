@@ -52,15 +52,15 @@ class Visit extends React.Component {
   }
 
   componentDidMount() {
-    fetch("/tables/normal")
+    fetch("/sqlite/tables/normal")
       .then((res) => res.json())
       .then((data) => this.setState({ normal_tables: data }));
 
-    fetch("/tables/outdoor")
+    fetch("/sqlite/tables/outdoor")
       .then((res) => res.json())
       .then((data) => this.setState({ outdoor_tables: data }));
 
-    fetch("/tables/lounge")
+    fetch("/sqlite/tables/lounge")
       .then((res) => res.json())
       .then((data) => this.setState({ lounge_tables: data }));
   }
@@ -114,7 +114,7 @@ class Menu extends React.Component {
   }
 
   componentDidMount() {
-    fetch("/users")
+    fetch("/sqlite/menu")
       .then((res) => res.json())
       .then((data) => this.setState({ menu: data }));
   }
@@ -237,15 +237,15 @@ class Reservation extends React.Component {
   }
 
   fetchStates() {
-    fetch("/tables/normal")
+    fetch("/sqlite/tables/normal")
       .then((res) => res.json())
       .then((data) => this.setState({ normal_tables: data }));
 
-    fetch("/tables/outdoor")
+    fetch("/sqlite/tables/outdoor")
       .then((res) => res.json())
       .then((data) => this.setState({ outdoor_tables: data }));
 
-    fetch("/tables/lounge")
+    fetch("/sqlite/tables/lounge")
       .then((res) => res.json())
       .then((data) => this.setState({ lounge_tables: data }));
   }
@@ -283,7 +283,7 @@ class Reservation extends React.Component {
         </div>
         <button className="button" onClick={() => this.cleanBookedTables()}>Clear</button>
         <Confirm bookedTables={this.state.bookedTables} cleanBookedTables={this.cleanBookedTables} fetchStates={this.fetchStates}/>
-        <button className="button danger" onClick={() => {fetch("/tables/reset"); this.fetchStates();}}>Reset</button>
+        <button className="button danger" onClick={() => {fetch("/sqlite/tables/reset"); this.fetchStates();}}>Reset</button>
       </main>
     );
   }
@@ -291,7 +291,7 @@ class Reservation extends React.Component {
 
 function Confirm(props) {
   return (
-    <button className="button" onClick={() => {props.bookedTables.map((info) => fetch("/tables/update", {
+    <button className="button" onClick={() => {props.bookedTables.map((info) => fetch("/sqlite/tables/update", {
       method: "POST",
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -390,6 +390,7 @@ function HeaderTop(props) {
           Pizza Palace
         </button>
       </div>
+      {/* use nav here*/}
       <div className="header-nav">
         <ul>
           <li>

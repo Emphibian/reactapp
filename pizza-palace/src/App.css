@@ -9,12 +9,12 @@
   flex: 1 1 auto;
   margin-right: auto;
   position: relative;
-  font-family: "Droid Sans", sans;
+  font-family: "Droid Sans", sans-serif;
   color: white;
 }
 
 .header-title button {
-  font-family: "Droid Sans", sans;
+  font-family: "Droid Sans", sans-serif;
   color: white;
   background: inherit;
   font-size: 1.8rem;
@@ -33,7 +33,7 @@ ul {
 .header-nav li {
   display: inline;
   padding: 0 5% 0 0;
-  font-family: "Roboto", "Helvetica", sans;
+  font-family: "Roboto", "Helvetica", sans-serif;
   color: white;
 }
 
@@ -58,7 +58,7 @@ ul {
   margin: 5% 2%;
   padding: 1rem;
   flex: 5 1 auto;
-  font-family: "Noto Sans", sans;
+  font-family: "Noto Sans", sans-serif;
 }
 
 .side-content {
@@ -68,7 +68,7 @@ ul {
 
 .footer {
   display: flex;
-  font-family: sans;
+  font-family: sans-serif;
   color: white;
   background: black;
   padding: 2% 0;
